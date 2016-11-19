@@ -86,8 +86,8 @@ li {
 .calc-button {
     	/*Step 2: Basic Button Styles*/
 	display: block;
-	height: 20px;
-	width: 20px;
+	height: 35px;
+	width: 35px;
 	background: #EDE5E0;
 	border: 1px solid rgba(33, 68, 72, 0.59);
 	
@@ -114,13 +114,13 @@ li {
 }
 
 .calc-button-wide {
-    width: 67px;
+    width: 82px;
 }
 
 .calc-button-tall {
-    height: 62px;
+    height: 74px;
     position: relative;
-    top: -42px;
+    top: -39px;
 }
 
 a.calc-button {
@@ -129,7 +129,7 @@ a.calc-button {
 }
 
 .calc-row {
-    margin-bottom: 20px;
+    margin-bottom: 3px;
 }
 
 .calc-row:first-child {
