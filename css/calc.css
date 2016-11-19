@@ -8,13 +8,7 @@
     /*border-radius: 5%;*/
 }
 
-#keypad {
-    border: 1px solid black;
-    width: 90%;
-    height: 70%;
-    margin: 10% auto;
-    /*border-radius: 5%;*/
-}
+
 
 html, body, .fullHeight { 
   margin:0; 
@@ -98,7 +92,7 @@ li {
 	
 	/*Step 4: Fancy CSS3 Styles*/
 	background: linear-gradient(top, #34696f, #2f5f63);
-	border-radius: 2px;
+	border-radius: 3    px;
 	/*box-shadow: 0 2px 0 #1b383b;*/
 	text-shadow: 0 2px 2px rgba(255, 255, 255, 0.2);
 }
@@ -125,7 +119,7 @@ li {
 
 a.calc-button {
 	text-decoration: none;
-    margin: 0 auto;
+    margin: 0 0.2px;
 }
 
 .calc-row {
@@ -134,4 +128,21 @@ a.calc-button {
 
 .calc-row:first-child {
     margin-top: 10px;
+}
+
+#keypad {
+    border: 1px solid black;
+    width: 90%;
+    height: 70%;
+    margin: 10% auto;
+    /*padding: 0 3px;*/
+    /*border-radius: 5%;*/
+}
+
+.three.columns:first-child {
+    /*margin-left: 3px;*/
+}
+
+* {
+    /*border: 1px solid red;*/
 }
