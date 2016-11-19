@@ -89,3 +89,46 @@ li {
 .centerContent h2 {
     margin-top: 5%;
 }
+
+.calc-button {
+    	/*Step 2: Basic Button Styles*/
+	display: block;
+	height: 20px;
+	width: 20px;
+	background: #34696f;
+	border: 1px solid rgba(33, 68, 72, 0.59);
+	
+	/*Step 3: Text Styles*/
+	color: rgba(0, 0, 0, 0.55);
+	text-align: center;
+	/*font: bold 3.2em/100px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;*/
+	
+	/*Step 4: Fancy CSS3 Styles*/
+	background: linear-gradient(top, #34696f, #2f5f63);
+	border-radius: 2px;
+	/*box-shadow: 0 2px 0 #1b383b;*/
+	text-shadow: 0 2px 2px rgba(255, 255, 255, 0.2);
+}
+
+.calc-button-wide {
+    width: 67px;
+}
+
+.calc-button-tall {
+    height: 62px;
+    position: relative;
+    top: -42px;
+}
+
+a.calc-button {
+	text-decoration: none;
+    margin: 0 auto;
+}
+
+.calc-row {
+    margin-bottom: 20px;
+}
+
+.calc-row:first-child {
+    margin-top: 10px;
+}
