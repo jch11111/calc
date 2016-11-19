@@ -1,11 +1,4 @@
-#calculator {
-    border: 1px solid red; 
-    width: 200px; 
-    height: 300px; 
-    margin: 20px auto;
-    background-color: pink;
-    border-radius: 5%;
-}
+
 
 #output {
     border: 1px solid black;
@@ -95,7 +88,7 @@ li {
 	display: block;
 	height: 20px;
 	width: 20px;
-	background: #34696f;
+	background: #EDE5E0;
 	border: 1px solid rgba(33, 68, 72, 0.59);
 	
 	/*Step 3: Text Styles*/
@@ -108,6 +101,16 @@ li {
 	border-radius: 2px;
 	/*box-shadow: 0 2px 0 #1b383b;*/
 	text-shadow: 0 2px 2px rgba(255, 255, 255, 0.2);
+}
+
+#calculator {
+    border: 1px solid #CDC5C0; 
+    width: 200px; 
+    height: 300px; 
+    margin: 20px auto;
+    background-color: #CDC5C0;
+    border-radius: 5%;
+	box-shadow: 3px 3px 2px #4b687b;
 }
 
 .calc-button-wide {
