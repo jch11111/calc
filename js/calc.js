@@ -155,6 +155,10 @@ var calc = (function () {
 
     function init() {
         $(function () {
+            var isChrome = /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+            if (!isChrome) {
+                var overlay = $('<div id=\'overlay\'>Please view page with Google Chrome browser</div>').prependTo('body').attr('id', 'overlay');
+            }
             setEventHandlers();
             initializeCurrentEntry();
             createCurrentEntrySettersGetters();

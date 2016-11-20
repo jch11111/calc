@@ -141,3 +141,13 @@ a.calc-button {
 a:hover, a:focus, a:active, a:visited {
     text-decoration: none !important;
 }
+
+#overlay {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1000000;
+  background: url('opaque.png');
+  color: white;
+  line-height: 700px;
+}
