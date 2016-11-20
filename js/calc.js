@@ -17,7 +17,54 @@ var calc = (function () {
         },
         inifinitySymbol = '\u221E';
 
-    var init = function () {
+    function calculateStack() {
+        var runningTotal = operationStack[0];
+
+        for (var stackItem = 1; stackItem < operationStack.length; stackItem += 2) {
+            runningTotal = mathOperation(operationStack[stackItem], runningTotal, operationStack[stackItem + 1]);
+        }
+
+        //return mathOperation(operationStack[operationStack.length - 1], runningTotal, currentEntry.amount);
+        return runningTotal;
+    }
+
+    function display(valueToDisplay) {
+        $('#results').text(valueToDisplay);
+    }
+
+    function displayCurrentEntry() {
+        if (isNaN(currentEntry.amount)) {
+            display(inifinitySymbol);
+        } else {
+            display(currentEntry.amount);
+        }
+    }
+
+    function displayOperationStack() {
+        var operationStackString = operationStack.reduce(function (a, b) {
+            return (operatorSymbols[a] || a.toString()) + (operatorSymbols[b] || b.toString());
+        });
+        $('#mathProblem').text(operationStackString);
+    }
+
+    function displayOperator(operator) {
+        display(operatorSymbols[operator]);
+    }
+
+    function handleButtonClick(buttonValueOrOperation) {
+        var isOPeration = isNaN(buttonValueOrOperation);
+        var isNumericAndAllowed = !isOPeration && !currentEntry.isOperationsOnly;
+
+        if (isNumericAndAllowed) {
+            updateCurrentEntry(Number(buttonValueOrOperation));
+            displayCurrentEntry();
+        }
+        if (isOPeration) {
+            performOrCacheOperation(buttonValueOrOperation);
+        }
+    }
+
+    function init() {
         $(function () {
             setEventHandlers();
             initializeCurrentEntry();
@@ -35,12 +82,6 @@ var calc = (function () {
         })
     };
 
-    function setEventHandlers() {
-        $('a').click(function (event) {
-            handleButtonClick(event.target.id);
-        });
-    }
-
     function initializeCurrentEntry() {
         currentEntry.wholeAmount = 0;
         currentEntry.decimalAmount = 0;
@@ -49,37 +90,21 @@ var calc = (function () {
         currentEntry.isOperationsOnly = false;
     }
 
-    function displayCurrentEntry() {
-        if (isNaN(currentEntry.amount)) {
-            display(inifinitySymbol);
-        } else {
-            display(currentEntry.amount);
-        }
-    }
-
-    function display(valueToDisplay) {
-        $('#results').text(valueToDisplay);
-    }
-
-    function handleButtonClick(buttonValueOrOperation) {
-        var isOPeration = isNaN(buttonValueOrOperation);
-        var isNumericAndAllowed = !isOPeration && !currentEntry.isOperationsOnly;
-
-        if (isNumericAndAllowed) {
-            updateCurrentEntry(Number(buttonValueOrOperation));
-            displayCurrentEntry();
-        }
-        if (isOPeration) {
-            performOrCacheOperation(buttonValueOrOperation);
-        }
-    }
-
-    function updateCurrentEntry(digit) {
-        if (currentEntry.decimalMode) {
-            currentEntry.decimalAmount += digit * Math.pow(10, currentEntry.powerOfTen--);
-        } else {
-            currentEntry.wholeAmount = (currentEntry.wholeAmount * 10) + digit;
-        }
+    function mathOperation(operation, x, y) {
+        switch (operation) {
+            case "add":
+                return x + y;
+                break;
+            case "subtract":
+                return x - y;
+                break;
+            case "multiply":
+                return x * y;
+                break;
+            case "divide":
+                return x / y;
+                break;
+        };
     }
 
     function performOrCacheOperation(operation) {
@@ -127,54 +152,25 @@ var calc = (function () {
         };
     }
 
-    function displayOperationStack() {
-        var operationStackString = operationStack.reduce(function (a, b) {
-            return (operatorSymbols[a] || a.toString()) + (operatorSymbols[b] || b.toString());
-        });
-        $('#mathProblem').text(operationStackString);
-    }
-
-    function isOperator(text) {
-
-    }
-
-    function displayOperator(operator) {
-        display(operatorSymbols[operator]);
-    }
-
-    function calculateStack() {
-        var runningTotal = operationStack[0];
-
-        for (var stackItem = 1; stackItem < operationStack.length; stackItem += 2) {
-            runningTotal = mathOperation(operationStack[stackItem], runningTotal, operationStack[stackItem + 1]);
-        }
-
-        //return mathOperation(operationStack[operationStack.length - 1], runningTotal, currentEntry.amount);
-        return runningTotal;
-    }
-
-    function mathOperation(operation, x, y) {
-        switch (operation) {
-            case "add":
-                return x + y;
-                break;
-            case "subtract":
-                return x - y;
-                break;
-            case "multiply":
-                return x * y;
-                break;
-            case "divide":
-                return x / y;
-                break;
-        };
-    }
-
     function setCurrentEntry(amount) {
         currentEntry.wholeAmount = parseInt(amount, 10);
         currentEntry.decimalAmount = amount - currentEntry.wholeAmount;
         currentEntry.powerOfTen = null;
         currentEntry.decimalMode = false;
+    }
+
+    function setEventHandlers() {
+        $('a').click(function (event) {
+            handleButtonClick(event.target.id);
+        });
+    }
+
+    function updateCurrentEntry(digit) {
+        if (currentEntry.decimalMode) {
+            currentEntry.decimalAmount += digit * Math.pow(10, currentEntry.powerOfTen--);
+        } else {
+            currentEntry.wholeAmount = (currentEntry.wholeAmount * 10) + digit;
+        }
     }
 
     return {
