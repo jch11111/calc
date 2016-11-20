@@ -8,8 +8,12 @@ var wikki = (function () {
 
     function setEventHandlers() {
         $('a').click(function (event) {
-            $('#results').text(event.target.id);
+            handleButtonClick(event.target.id);
         });
+    }
+
+    function handleButtonClick(buttonValueOrOperation) {
+        $('#results').text(buttonValueOrOperation);
     }
 
     return {
