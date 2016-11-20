@@ -6,7 +6,22 @@ var calc = (function () {
             decimalAmount: 0,
             powerOfTen: null,
             decimalMode: false,
-            isOperationsOnly: false
+            isOperationsOnly: false,
+            numberOfTrailingDecimalZeros: 0,
+            toString: function () {
+                var amt = this.amount,
+                    output;
+                if (this.numberOfDecimalDigits > 10) {
+                    amt = Math.round10(amt, -10);
+                }
+
+                output = amt.toString();
+
+                if (this.numberOfTrailingDecimalZeros && output.indexOf('.') === -1) {
+                    output += '.';
+                }
+                return output + '0'.repeat(this.numberOfTrailingDecimalZeros);
+            }
         },
         operationStack = [],
         operatorSymbols = {
@@ -49,20 +64,31 @@ var calc = (function () {
                 currentEntry.decimalAmount = value - currentEntry.wholeAmount;
             }
         });
+        Object.defineProperty(currentEntry, 'numberOfDecimalDigits', {
+            'get': function () {
+                var currentEntry = this,
+                    decimalDigits = 0;
+
+                if (currentEntry.decimalAmount) {
+                    decimalDigits = currentEntry.decimalAmount.toString().length - 2;
+                }
+
+                return decimalDigits + currentEntry.numberOfTrailingDecimalZeros;
+            }
+        });
         Object.defineProperty(currentEntry, 'numberOfDigits', {
             'get': function () {
                 var currentEntry = this,
                     wholeDigits,
-                    decimalDigits = 0;
+                    decimalDigits;
 
                 if (!currentEntry.amount) {
                     return 0;
                 }
 
                 wholeDigits = Math.floor(Math.log10(currentEntry.wholeAmount)) + 1;
-                if (currentEntry.decimalAmount) {
-                    decimalDigits = currentEntry.decimalAmount.toString().length - 2;
-                }
+                decimalDigits = currentEntry.numberOfDecimalDigits;
+
 
                 return wholeDigits + decimalDigits;
             }
@@ -77,7 +103,7 @@ var calc = (function () {
         if (isNaN(currentEntry.amount)) {
             display(inifinitySymbol);
         } else {
-            display(currentEntry.amount);
+            display(currentEntry.toString());
         }
     }
 
@@ -120,6 +146,7 @@ var calc = (function () {
         currentEntry.powerOfTen = null;
         currentEntry.decimalMode = false;
         currentEntry.isOperationsOnly = false;
+        currentEntry.numberOfTrailingDecimalZeros = 0;
     }
 
     function mathOperation(operation, x, y) {
@@ -202,6 +229,11 @@ var calc = (function () {
             currentEntry.decimalAmount = Math.round10(currentEntry.decimalAmount, currentEntry.powerOfTen);
             //currentEntry.decimalAmount = currentEntry.decimalAmount.toFixed(Math.abs(currentEntry.powerOfTen));
             currentEntry.powerOfTen--;
+            if (0 === digit) {
+                currentEntry.numberOfTrailingDecimalZeros++;
+            } else {
+                currentEntry.numberOfTrailingDecimalZeros = 0;
+            }
         } else {
             currentEntry.wholeAmount = (currentEntry.wholeAmount * 10) + digit;
         }
