@@ -7,7 +7,7 @@ var calc = (function () {
             powerOfTen: null,
             decimalMode: false,
             isOperationsOnly: false
-        };
+        },
         operationStack = [],
         operatorSymbols = {
             add: '+',
@@ -15,7 +15,8 @@ var calc = (function () {
             multiply: '×',
             divide: '÷'
         },
-        inifinitySymbol = '\u221E';
+        inifinitySymbol = '\u221E',
+        MAX_DIGITS = 14;
 
     function calculateStack() {
         var runningTotal = operationStack[0];
@@ -26,6 +27,46 @@ var calc = (function () {
 
         //return mathOperation(operationStack[operationStack.length - 1], runningTotal, currentEntry.amount);
         return runningTotal;
+    }
+
+    function createCurrentEntrySettersGetters() {
+        if (!currentEntry) {
+            throw ('currentEntry does not exist');
+            return;
+        }
+        Object.defineProperty(currentEntry, 'amount', {
+            'get': function () {
+                var currentEntry = this;
+                if (!isNaN(currentEntry.wholeAmount) && !isNaN(currentEntry.decimalAmount)) {
+                    return currentEntry.wholeAmount + currentEntry.decimalAmount;
+                } else {
+                    return NaN;
+                }
+            },
+            'set': function (value) {
+                var currentEntry = this;
+                currentEntry.wholeAmount = parseInt(value, 10);
+                currentEntry.decimalAmount = value - currentEntry.wholeAmount;
+            }
+        });
+        Object.defineProperty(currentEntry, 'numberOfDigits', {
+            'get': function () {
+                var currentEntry = this,
+                    wholeDigits,
+                    decimalDigits = 0;
+
+                if (!currentEntry.amount) {
+                    return 0;
+                }
+
+                wholeDigits = Math.floor(Math.log10(currentEntry.wholeAmount)) + 1;
+                if (currentEntry.decimalAmount) {
+                    decimalDigits = currentEntry.decimalAmount.toString().length - 2;
+                }
+
+                return wholeDigits + decimalDigits;
+            }
+        });
     }
 
     function display(valueToDisplay) {
@@ -53,7 +94,7 @@ var calc = (function () {
 
     function handleButtonClick(buttonValueOrOperation) {
         var isOPeration = isNaN(buttonValueOrOperation);
-        var isNumericAndAllowed = !isOPeration && !currentEntry.isOperationsOnly;
+        var isNumericAndAllowed = !isOPeration && !currentEntry.isOperationsOnly && currentEntry.numberOfDigits <= MAX_DIGITS;
 
         if (isNumericAndAllowed) {
             updateCurrentEntry(Number(buttonValueOrOperation));
@@ -68,16 +109,7 @@ var calc = (function () {
         $(function () {
             setEventHandlers();
             initializeCurrentEntry();
-            Object.defineProperty(currentEntry, 'amount', {
-                'get': function () {
-                    var currentEntry = this;
-                    if (!isNaN(currentEntry.wholeAmount) && !isNaN(currentEntry.decimalAmount)) {
-                        return currentEntry.wholeAmount + currentEntry.decimalAmount;
-                    } else {
-                        return NaN;
-                    }
-                }
-            });
+            createCurrentEntrySettersGetters();
             displayCurrentEntry();
         })
     };
@@ -153,8 +185,7 @@ var calc = (function () {
     }
 
     function setCurrentEntry(amount) {
-        currentEntry.wholeAmount = parseInt(amount, 10);
-        currentEntry.decimalAmount = amount - currentEntry.wholeAmount;
+        currentEntry.amount = amount;
         currentEntry.powerOfTen = null;
         currentEntry.decimalMode = false;
     }
@@ -167,7 +198,10 @@ var calc = (function () {
 
     function updateCurrentEntry(digit) {
         if (currentEntry.decimalMode) {
-            currentEntry.decimalAmount += digit * Math.pow(10, currentEntry.powerOfTen--);
+            currentEntry.decimalAmount += digit * Math.pow(10, currentEntry.powerOfTen);
+            currentEntry.decimalAmount = Math.round10(currentEntry.decimalAmount, currentEntry.powerOfTen);
+            //currentEntry.decimalAmount = currentEntry.decimalAmount.toFixed(Math.abs(currentEntry.powerOfTen));
+            currentEntry.powerOfTen--;
         } else {
             currentEntry.wholeAmount = (currentEntry.wholeAmount * 10) + digit;
         }
