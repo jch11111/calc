@@ -129,9 +129,13 @@ a.calc-button {
     text-align: center;
 }
 
-#results {
+#results, #mathProblem {
     text-align: right;
     padding-right: 5px;
+}
+
+#mathProblem {
+    font-size: 8px;
 }
 
 a:hover, a:focus, a:active, a:visited {

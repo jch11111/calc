@@ -94,10 +94,13 @@ var calc = (function () {
                 initializeCurrentEntry();
                 displayCurrentEntry();
                 operationStack = [];
+                $('#mathProblem').text('');
                 break;
             case "clearentry":
-                initializeCurrentEntry();
-                displayCurrentEntry();
+                if (!currentEntry.isOperationsOnly) {
+                    initializeCurrentEntry();
+                    displayCurrentEntry();
+                }
                 break;
             case "add":
             case "subtract":
@@ -107,14 +110,32 @@ var calc = (function () {
                 operationStack.push(operation);
                 initializeCurrentEntry();
                 displayOperator(operation);
+                displayOperationStack();
                 break;
             case "equals":
-                setCurrentEntry(calculateStack());
-                operationStack = [];
-                displayCurrentEntry();
-                currentEntry.isOperationsOnly = true;
+                if (!currentEntry.isOperationsOnly) {
+                    operationStack.push(currentEntry.amount);
+                    setCurrentEntry(calculateStack());
+                    operationStack.push('=');
+                    operationStack.push(currentEntry.amount);
+                    displayOperationStack();
+                    operationStack = [];
+                    displayCurrentEntry();
+                    currentEntry.isOperationsOnly = true;
+                }
                 break;
         };
+    }
+
+    function displayOperationStack() {
+        var operationStackString = operationStack.reduce(function (a, b) {
+            return (operatorSymbols[a] || a.toString()) + (operatorSymbols[b] || b.toString());
+        });
+        $('#mathProblem').text(operationStackString);
+    }
+
+    function isOperator(text) {
+
     }
 
     function displayOperator(operator) {
@@ -124,11 +145,12 @@ var calc = (function () {
     function calculateStack() {
         var runningTotal = operationStack[0];
 
-        for (var stackItem = 1; stackItem < operationStack.length - 1; stackItem += 2) {
+        for (var stackItem = 1; stackItem < operationStack.length; stackItem += 2) {
             runningTotal = mathOperation(operationStack[stackItem], runningTotal, operationStack[stackItem + 1]);
         }
 
-        return mathOperation(operationStack[operationStack.length - 1], runningTotal, currentEntry.amount);
+        //return mathOperation(operationStack[operationStack.length - 1], runningTotal, currentEntry.amount);
+        return runningTotal;
     }
 
     function mathOperation(operation, x, y) {
