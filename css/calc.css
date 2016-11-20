@@ -129,6 +129,11 @@ a.calc-button {
     text-align: center;
 }
 
+#results {
+    text-align: right;
+    padding-right: 5px;
+}
+
 a:hover, a:focus, a:active, a:visited {
     text-decoration: none !important;
 }
