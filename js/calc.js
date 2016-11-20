@@ -28,7 +28,8 @@ var calc = (function () {
             add: '+',
             subtract: '-',
             multiply: '×',
-            divide: '÷'
+            divide: '÷',
+            equals: '='
         },
         inifinitySymbol = '\u221E',
         MAX_DIGITS = 14;
@@ -109,8 +110,29 @@ var calc = (function () {
 
     function displayOperationStack() {
         var operationStackString = operationStack.reduce(function (a, b) {
-            return (operatorSymbols[a] || a.toString()) + (operatorSymbols[b] || b.toString());
+            return (operatorSymbols[a] || shortenNumber(a) + (operatorSymbols[b] || shortenNumber(b)));
+
+            function shortenNumber(num) {
+                if (isNaN(num) && typeof num !== 'string') {
+                    return inifinitySymbol;
+                }
+                if (isNaN(num)) {
+                    return num;
+                }
+                var workingNum = num;
+                if (parseInt(workingNum, 10) !== workingNum) {
+                    workingNum = Math.round10(workingNum, -2);
+                }
+                if (workingNum > 999999) {
+                    return workingNum.toExponential(4);
+                } else {
+                    return workingNum.toString();
+                }
+            }
         });
+        if (operationStackString.length > 35) {
+            operationStackString = "..." + operationStackString.substr(-35);
+        }
         $('#mathProblem').text(operationStackString);
     }
 
@@ -200,7 +222,7 @@ var calc = (function () {
                 if (!currentEntry.isOperationsOnly) {
                     operationStack.push(currentEntry.amount);
                     setCurrentEntry(calculateStack());
-                    operationStack.push('=');
+                    operationStack.push('equals');
                     operationStack.push(currentEntry.amount);
                     displayOperationStack();
                     operationStack = [];
