@@ -7,6 +7,7 @@ var calc = (function () {
             powerOfTen: null,
             decimalMode: false,
             isOperationsOnly: false,
+            operationsNotAllowed: false,
             numberOfTrailingDecimalZeros: 0,
             toString: function () {
                 var amt = this.amount,
@@ -145,6 +146,7 @@ var calc = (function () {
         var isNumericAndAllowed = !isOPeration && !currentEntry.isOperationsOnly && currentEntry.numberOfDigits <= MAX_DIGITS;
 
         if (isNumericAndAllowed) {
+            currentEntry.operationsNotAllowed = false;
             updateCurrentEntry(Number(buttonValueOrOperation));
             displayCurrentEntry();
         }
@@ -172,6 +174,7 @@ var calc = (function () {
         currentEntry.powerOfTen = null;
         currentEntry.decimalMode = false;
         currentEntry.isOperationsOnly = false;
+        currentEntry.operationsNotAllowed = false;
         currentEntry.numberOfTrailingDecimalZeros = 0;
     }
 
@@ -216,14 +219,17 @@ var calc = (function () {
             case "subtract":
             case "multiply":
             case "divide":
-                operationStack.push(currentEntry.amount);
-                operationStack.push(operation);
-                initializeCurrentEntry();
-                displayOperator(operation);
-                displayOperationStack();
+                if (!currentEntry.operationsNotAllowed) {
+                    operationStack.push(currentEntry.amount);
+                    operationStack.push(operation);
+                    initializeCurrentEntry();
+                    displayOperator(operation);
+                    displayOperationStack();
+                    currentEntry.operationsNotAllowed = true;
+                }
                 break;
             case "equals":
-                if (!currentEntry.isOperationsOnly) {
+                if (!currentEntry.isOperationsOnly && !currentEntry.operationsNotAllowed) {
                     operationStack.push(currentEntry.amount);
                     setCurrentEntry(calculateStack());
                     operationStack.push('equals');
