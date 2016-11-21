@@ -84,11 +84,12 @@ var calc = (function () {
                     wholeDigits,
                     decimalDigits;
 
-                if (!currentEntry.amount) {
-                    return 0;
+                if (currentEntry.amount < 1) {
+                    wholeDigits =  0;
+                } else {
+                    wholeDigits = Math.floor(Math.log10(currentEntry.wholeAmount)) + 1;
                 }
 
-                wholeDigits = Math.floor(Math.log10(currentEntry.wholeAmount)) + 1;
                 decimalDigits = currentEntry.numberOfDecimalDigits;
 
 
